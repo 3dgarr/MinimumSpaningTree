@@ -5,6 +5,11 @@ const char*	Graph::FileNotOpened::what(void) const throw()
 	return ("Error opening file" );
 }
 
+const char*	Graph::BadInput::what(void) const throw()
+{
+	return ("Bad Input" );
+}
+
 void Graph::printGraph() const
 {
     std::cout << "Edges:" << std::endl;
@@ -17,16 +22,26 @@ void Graph::printGraph() const
 void	Graph::readGraphFromFile(const char* filename)
 {
     std::ifstream file(filename);
+	numberOfEdges = 0;
+	numberOfVerteces = 0;
+
     if (file.is_open())
 	{
-        file >> numberOfVerteces >> numberOfEdges;
-        for (size_t i = 0; i < numberOfEdges; i++) 
+		int u, v, weight;
+		std::string	line;
+		while (std::getline(file, line))
 		{
-            int u, v, weight;
-            file >> u >> v >> weight;
+			std::istringstream iss(line);
+			if (!(iss >> u >> v >> weight))
+			{
+				throw BadInput();
+			}
             graph.emplace_back(weight, std::make_pair(u, v));
+			verteces.insert(u);
+			verteces.insert(v);
+			numberOfEdges++;
         }
-        file.close();
+		numberOfVerteces = verteces.size();
 		std::cout << "Number of Edges    = " << numberOfEdges << std::endl;
 		std::cout << "Number of Verteces = " << numberOfVerteces<< std::endl;
     }
@@ -34,6 +49,7 @@ void	Graph::readGraphFromFile(const char* filename)
 	{
 		throw	(FileNotOpened());
     }
+	file.close();
 }
 
 int	Graph::FindSet(int i)
@@ -78,41 +94,12 @@ void	Graph::printMST()	const
 		std::cout <<"< " << mst[i].second.first << " - " << mst[i].second.second << " > -- [" << mst[i].first << "]" << std::endl; 
 	}
 }
-// void Graph::DFS(int v, std::vector<bool>& visited) 
-// {
-//     visited[v] = true;
-//     for (auto& neighbor : graph.second) 
-// 	{
-//         int u = neighbor.second.first;
-//         if (!visited[u]) 
-// 		{
-//             DFS(u, visited);
-//         }
-//     }
-// }
-
-// bool Graph::isConnected() 
-// {
-//     std::vector<bool> visited(numberOfVerteces + 1, false);
-//     DFS(1, visited);
-//     for (int i = 1; i <= numberOfVerteces; ++i) 
-// 	{
-//         if (!visited[i]) 
-// 		{
-//             return false;
-//         }
-//     }
-//     return true;
-// }
-
-
 
 Graph::Graph(const char *filename)
 {
 	graph.clear();
 	mst.clear();		
 	readGraphFromFile(filename);
-	// if (isConnected())
 }
 
 

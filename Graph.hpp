@@ -7,10 +7,12 @@
 # include	<set>
 # include	<utility> // for std::pair
 # include	<exception>
+# include	<sstream>
 
 
 using	Edges			= std::pair<int, int>;
-using	AdjacencyList	= std::vector<std::pair<int, Edges>>;
+using	Weight			= int;
+using	AdjacencyList	= std::vector<std::pair<Weight, Edges>>;
 
 class Graph
 {
@@ -33,6 +35,7 @@ class Graph
 
 	private:
 		AdjacencyList		graph;
+		std::set<int>		verteces;
     	AdjacencyList		mst;
 		int*				parent;
 
@@ -44,6 +47,11 @@ class Graph
 	
 	public:
 		class FileNotOpened : public std::exception
+		{
+			public:
+				const char *what() const throw();	
+		};
+		class BadInput : public std::exception
 		{
 			public:
 				const char *what() const throw();	
