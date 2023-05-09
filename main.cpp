@@ -4,7 +4,7 @@ int main(void)
 {
 	try
 	{
-		Graph my_graph("input.txt");
+		Graph	my_graph("input.txt");
 		
 		my_graph.printGraph();
 		my_graph.Kruskal();

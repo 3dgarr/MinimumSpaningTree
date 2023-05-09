@@ -1,22 +1,56 @@
 #include "./Graph.hpp"
 
-const char*	Graph::FileNotOpened::what(void) const throw()
-{
-	return ("Error opening file" );
-}
-
-const char*	Graph::BadInput::what(void) const throw()
-{
-	return ("Bad Input" );
-}
-
 void Graph::printGraph() const
 {
-    std::cout << "Edges:" << std::endl;
-    for (const auto& edge : graph) 
+	system("rm -rf in; mkdir in");
+	std::ofstream input("./in/input.dot");
+	if (!input.is_open())
 	{
-        std::cout << edge.second.first << " - " << edge.second.second << " (" << edge.first << ")" << std::endl;
-    }
+		throw std::runtime_error("Can't create inputfile");
+	}
+
+	input << "graph {\n";
+	for (auto pair : graph)
+	{
+		input  << "\t" << pair.second.first << " -- " << pair.second.second << " [label=" << pair.first  << "]"<< std::endl; 
+	}
+	input << "}\n";
+	input.close();
+    system("dot -Tpng -O ./in/input.dot && xdg-open ./in/input.dot");
+}
+
+void	Graph::getAdjList()
+{
+	for (auto edge : graph)
+	{
+		auto	u = edge.second.first;
+		auto	v = edge.second.second;
+		adjancecyList[u].push_back(v);
+		adjancecyList[v].push_back(u);
+	}
+}
+
+bool		Graph::isConnected()
+{
+	getAdjList();
+	auto	startIndex	= adjancecyList.begin()->first;
+	std::unordered_set<int>	visitedVerteces;
+	std::queue<int>			waitlist;
+	waitlist.push(startIndex);
+    while (!waitlist.empty()) 
+	{
+        int vertex = waitlist.front();
+        waitlist.pop();
+        visitedVerteces.insert(vertex);
+        for (int neighbor : adjancecyList[vertex]) 
+		{
+            if (visitedVerteces.find(neighbor) == visitedVerteces.end()) 
+			{
+                waitlist.push(neighbor);
+            }
+        }
+	}
+	return (visitedVerteces.size() == adjancecyList.size());
 }
 
 void	Graph::readGraphFromFile(const char* filename)
@@ -34,7 +68,7 @@ void	Graph::readGraphFromFile(const char* filename)
 			std::istringstream iss(line);
 			if (!(iss >> u >> v >> weight))
 			{
-				throw BadInput();
+				throw std::runtime_error("Bad input file\n");
 			}
             graph.emplace_back(weight, std::make_pair(u, v));
 			verteces.insert(u);
@@ -42,12 +76,10 @@ void	Graph::readGraphFromFile(const char* filename)
 			numberOfEdges++;
         }
 		numberOfVerteces = verteces.size();
-		std::cout << "Number of Edges    = " << numberOfEdges << std::endl;
-		std::cout << "Number of Verteces = " << numberOfVerteces<< std::endl;
     }
 	else 
 	{
-		throw	(FileNotOpened());
+		throw	(std::runtime_error("Error opening file\n"));
     }
 	file.close();
 }
@@ -67,6 +99,9 @@ void Graph::UnionSet(int u, int v)
 
 void Graph::Kruskal() 
 {
+	if (!isConnected())
+		throw	std::runtime_error("Graph is not connected\n");
+
 	size_t	i;
 	int		u, v;
 	
@@ -88,11 +123,21 @@ void Graph::Kruskal()
 
 void	Graph::printMST()	const
 {
-	std::cout << "< Edges > -- [weight]" << std::endl;
-	for (size_t i = 0; i < mst.size(); i++)
+	system("rm -rf out; mkdir out");
+	std::ofstream output("./out/output.dot");
+	if (!output.is_open())
 	{
-		std::cout <<"< " << mst[i].second.first << " - " << mst[i].second.second << " > -- [" << mst[i].first << "]" << std::endl; 
+		throw std::runtime_error("Can't create outputfile");
 	}
+
+	output << "graph {\n";
+	for (auto pair : mst)
+	{
+		output  << "\t" << pair.second.first << " -- " << pair.second.second << " [label=" << pair.first  << "]"<< std::endl; 
+	}
+	output << "}";
+	output.close();
+    system("dot -Tpng -O ./out/output.dot && xdg-open ./out/output.dot");
 }
 
 Graph::Graph(const char *filename)

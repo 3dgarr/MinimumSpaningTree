@@ -8,11 +8,17 @@
 # include	<utility> // for std::pair
 # include	<exception>
 # include	<sstream>
+# include	<unordered_map>
+# include	<unordered_set>
+# include	<queue>
 
 
 using	Edges			= std::pair<int, int>;
 using	Weight			= int;
-using	AdjacencyList	= std::vector<std::pair<Weight, Edges>>;
+using	ListOfEdges		= std::vector<std::pair<Weight, Edges>>;
+using	AdjacencyList	= std::unordered_map<int, std::vector<int>>;
+using	Verteces		= std::set<int>;
+
 
 class Graph
 {
@@ -27,34 +33,18 @@ class Graph
 		int		FindSet(int i);
 		void	UnionSet(int u, int v);
 		void	Kruskal();
-		// void	DFS(int v, std::vector<bool>& visited);
-		// bool	isConnected();
-
-
-
+		bool	isConnected();
+		void	getAdjList();
+		
 
 	private:
-		AdjacencyList		graph;
-		std::set<int>		verteces;
-    	AdjacencyList		mst;
+		ListOfEdges			graph;
+    	ListOfEdges			mst;
 		int*				parent;
-
+		Verteces			verteces;
 		size_t				numberOfVerteces;
 		size_t				numberOfEdges;
-	
+		AdjacencyList		adjancecyList;	
 
-
-	
-	public:
-		class FileNotOpened : public std::exception
-		{
-			public:
-				const char *what() const throw();	
-		};
-		class BadInput : public std::exception
-		{
-			public:
-				const char *what() const throw();	
-		};
 };
 
