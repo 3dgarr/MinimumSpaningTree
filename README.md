@@ -16,4 +16,4 @@
 #### 10. Run make and compile codes: &nbsp;**<code>make</code>**
 #### 11. Run executable: &nbsp;**<code>./mst</code>**
 #### 12. Congrats! Now you can see the picture of Minimum spaning tree of given graph :)
-#### 13. Also you can change input.txt file to add or delete edges and nodes, but they should be in this formate "<<"Vertece">> <<"Vertece">> <<"Weight">>"
+#### 13. Also you can change input.txt file to add or delete edges and nodes, but they should be in this formate "<"Vertece"> <"Vertece"> <"Weight">"
