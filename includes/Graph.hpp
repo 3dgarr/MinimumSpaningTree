@@ -23,21 +23,21 @@ using	Verteces		= std::set<int>;
 class Graph
 {
     public:
+		void	printGraph() const;
+		void	Kruskal();
+		void	printMST()	const;
 		Graph(const char* filename);
 		~Graph();
 	
-	public:
-		void	readGraphFromFile(const char *);
-		void	printGraph() const;
-		void	printMST()	const;
+	private:
+		void	readGraphFromFile();
 		int		FindSet(int i);
 		void	UnionSet(int u, int v);
-		void	Kruskal();
 		bool	isConnected();
 		void	getAdjList();
 		
-
 	private:
+
 		ListOfEdges			graph;
     	ListOfEdges			mst;
 		int*				parent;
@@ -45,6 +45,6 @@ class Graph
 		size_t				numberOfVerteces;
 		size_t				numberOfEdges;
 		AdjacencyList		adjancecyList;	
-
+		std::string			file_name;
 };
 

@@ -1,8 +1,8 @@
-#include "./Graph.hpp"
+#include "Graph.hpp"
 
 void Graph::printGraph() const
 {
-	system("rm -rf in; mkdir in");
+	system("mkdir -p in");
 	std::ofstream input("./in/input.dot");
 	if (!input.is_open())
 	{
@@ -53,9 +53,46 @@ bool		Graph::isConnected()
 	return (visitedVerteces.size() == adjancecyList.size());
 }
 
-void	Graph::readGraphFromFile(const char* filename)
+// void	Graph::readGraphFromFile()
+// {
+//     std::ifstream file(file_name);
+// 	numberOfEdges = 0;
+// 	numberOfVerteces = 0;
+
+//     if (file.is_open())
+// 	{
+
+// 		std::string	line;
+// 		while (std::getline(file, line))
+// 		{
+// 			std::istringstream	iss(line);
+// 			std::vector<int>	info;
+// 			int					num;
+// 			while (iss >> num)
+// 			{
+// 				info.push_back(num);
+// 			}
+// 			if (info.size() != 3 || !iss.eof())
+// 			{
+// 				throw std::runtime_error("Bad input file\n");
+// 			}
+//             graph.emplace_back(info[2], std::make_pair(info[0],info[1]));
+// 			verteces.insert(info[0]);
+// 			verteces.insert(info[0]);
+// 			numberOfEdges++;
+//         }
+// 		numberOfVerteces = verteces.size();
+//     }
+// 	else 
+// 	{
+// 		throw	(std::runtime_error("Error opening file\n"));
+//     }
+// 	file.close();
+// }
+
+void	Graph::readGraphFromFile()
 {
-    std::ifstream file(filename);
+    std::ifstream file(file_name);
 	numberOfEdges = 0;
 	numberOfVerteces = 0;
 
@@ -83,6 +120,7 @@ void	Graph::readGraphFromFile(const char* filename)
     }
 	file.close();
 }
+
 
 int	Graph::FindSet(int i)
 {
@@ -123,7 +161,7 @@ void Graph::Kruskal()
 
 void	Graph::printMST()	const
 {
-	system("rm -rf out; mkdir out");
+	system("mkdir -p out");
 	std::ofstream output("./out/output.dot");
 	if (!output.is_open())
 	{
@@ -143,8 +181,9 @@ void	Graph::printMST()	const
 Graph::Graph(const char *filename)
 {
 	graph.clear();
-	mst.clear();		
-	readGraphFromFile(filename);
+	mst.clear();	
+	file_name = filename;
+	readGraphFromFile();
 }
 
 
